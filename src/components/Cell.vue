@@ -1,9 +1,7 @@
 <template>
-	<div class="cell" :data-cell="cellStatus">
+	<div class="cell" :data-cell="cellStatus" :data-role="role">
 		<p>{{ value }}</p>
-		<p>
-			<slot name="coordinates"></slot>
-		</p>
+		<p> {{ role ? role : '' }} {{ coords }}</p>
 	</div>
 </template>
 
@@ -14,6 +12,14 @@
 		props: {
 			value: {
 				required: true,
+				type: String
+			},
+			coords: {
+				required: true,
+				type: String
+			},
+			role: {
+				required: false,
 				type: String
 			}
 		},
@@ -53,6 +59,7 @@
 			align-items: center;
 			justify-content: center;
 		}
+
 
 		&[data-cell='free'] {
 			background-color: #49fc09;

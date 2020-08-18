@@ -1,8 +1,13 @@
 <template>
-	<div class="field" v-if="cellsList.length" v-bind:style="fieldStyle">
-		<Cell v-for="(item, index) of cellsList" :key="index" :value="item">
-			<template #coordinates>{{  }}</template>
-		</Cell>
+	<div class="field" v-bind:style="fieldStyle">
+		<p v-if="!cellsList.length">Please, press "Start" button</p>
+		<Cell v-else
+			v-for="(item, index) of cellsList"
+			:value="item.value"
+			:coords="item.coords"
+			:key="index"
+			:role="`test`"
+		/>
 	</div>
 </template>
 
@@ -45,13 +50,32 @@
 				// todo make check for equal amount of items in gridList
 				// todo temp
 
+				// clear
+				this.cellsList.length = 0;
 
-				for( let row of this.gridList) { this.cellsList.push(...row.split("")) }
+				for( let [rowIndex, row] of this.gridList.entries() ) {
 
-				console.log('cellsList', this.cellsList);
+					// make an array from string
+					let arrRow = row.split("");
 
-				this.fieldStyle['grid-template-columns'] = `repeat(${this.gridList[0].length}, 60px)` ;
-				this.fieldStyle['grid-template-rows'] = `repeat(${this.gridList.length}, 60px)` ;
+					for (let [valueIndex, value] of arrRow.entries()) {
+						// create new cell which be an object with 2 props(coords & value)
+						let cell = {};
+
+						cell.coords = `${rowIndex}.${valueIndex}`
+						cell.value = value;
+
+						// fill the array which will be iterated
+						this.cellsList.push(cell)
+					}
+				}
+
+				// console.log('resulted cellsList!', this.cellsList);
+
+
+				// inline styles for component
+				this.fieldStyle['grid-template-columns'] = `repeat(${this.gridList[0].length}, 1fr)` ;
+				this.fieldStyle['grid-template-rows'] = `repeat(${this.gridList.length}, 94px)` ;
 
 				// deprecated
 				// this.cellsCounter = this.gridList[0].length * this.gridList.length;
@@ -67,6 +91,13 @@
 		border: 1px solid #fff;
 		grid-gap: 1px;
 		margin: 30px 0;
+		width: 100%;
+
+		p {
+			width: 100%;
+			color: #fff;
+			margin: 30px auto;
+		}
 	}
 
 </style>

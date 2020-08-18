@@ -3,13 +3,13 @@
 
 		<div class="content-wrap">
 
+			<!-- simple visualisation of field -->
+			<Field :gridList="gridList"/>
+
 			<div class="control">
 				<button @click="createField" id="create">Create world</button>
 				<button @click="minWalk(gridList, startX, startY, endX, endY)" id="build">Count steps</button>
 			</div>
-
-			<!-- simple visualisation of field -->
-			<Field :gridList="gridList"/>
 
 			<div id="banner-message">
 				<p id="result" :data-result="result === '' ? 'empty' : 'counted'">{{ result === ''? 'result...' : result }}</p>
@@ -151,8 +151,9 @@
 				font-size: 25px;
 				text-align: center;
 				transition: all 0.2s;
-				margin: 0 auto;
+				margin: 30px auto 0;
 				width: 300px;
+
 			}
 
 			p#result {
@@ -170,8 +171,8 @@
 				flex-direction: row;
 				justify-content: space-between;
 				align-items: center;
-				margin: 30px 0;
 				width: 100%;
+				/*margin: 30px 0;*/
 
 				button {
 					cursor: pointer;
