@@ -40,15 +40,9 @@
 			}
 		},
 
-		// created() {
-		// 	console.log(this.gridList);
-		// },
 
 		mounted() {
 			eventBus.$on('createField', () => {
-
-				// todo make check for equal amount of items in gridList
-				// todo temp
 
 				// clear
 				this.cellsList.length = 0;
@@ -71,15 +65,17 @@
 				}
 
 				// console.log('resulted cellsList!', this.cellsList);
-
+				eventBus.$emit('cellsList', this.cellsList);
 
 				// inline styles for component
-				this.fieldStyle['grid-template-columns'] = `repeat(${this.gridList[0].length}, 1fr)` ;
-				this.fieldStyle['grid-template-rows'] = `repeat(${this.gridList.length}, 94px)` ;
+				this.fieldStyle['grid-template-columns'] = `repeat(${this.gridList[0].length}, 1fr)`;
+				this.fieldStyle['grid-template-rows'] = `repeat(${this.gridList.length}, 94px)`;
+
+				eventBus.$emit('astar', this.cellsList)
 
 				// deprecated
 				// this.cellsCounter = this.gridList[0].length * this.gridList.length;
-			})
+			});
 		}
 	}
 </script>
@@ -88,10 +84,10 @@
 
 	.field{
 		display: grid;
-		border: 1px solid #fff;
-		grid-gap: 1px;
+		grid-gap: 2px;
 		margin: 30px 0;
 		width: 100%;
+		/*border: 1px solid #fff;*/
 
 		p {
 			width: 100%;

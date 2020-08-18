@@ -1,7 +1,8 @@
 <template>
 	<div class="cell" :data-cell="cellStatus" :data-role="role">
 		<p>{{ value }}</p>
-		<p> {{ role ? role : '' }} {{ coords }}</p>
+		<!-- todo add dynamic 'role' if there will be time-->
+		<p> {{ role ? '' : '' }} {{ coords }}</p>
 	</div>
 </template>
 
@@ -33,9 +34,9 @@
 		created() {
 			if( this.value === '.' ) this.cellStatus = 'free'
 			if( this.value === 'X' ) this.cellStatus = 'corrupted'
-			else {
-				console.log('Unknown value!');
-			}
+			// else {
+			// 	console.log('Unknown or empty value!');
+			// }
 		}
 
 	}
@@ -47,9 +48,6 @@
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr 1fr;
-		/*justify-content: center;*/
-		/*align-items: center;*/
-		/*flex-direction: column;*/
 		width: 100%;
 		height: auto;
 		background-color: #fff;
