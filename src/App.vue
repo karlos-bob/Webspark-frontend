@@ -6,13 +6,17 @@
 			<!-- simple visualisation of field -->
 			<Field :gridList="gridList"/>
 
+			<!-- control-buttons -->
 			<div class="control">
-				<button @click="createField" id="create">Create world</button>
-				<button @click="minWalk(gridList, startX, startY, endX, endY)" id="build">Count steps</button>
+				<!--<button @click="createField" id="create">Start</button>-->
+				<button @click="minWalk" id="build">minWalk()</button>
 			</div>
 
+			<!-- message with result -->
 			<div id="banner-message">
-				<p id="result" :data-result="result === '' ? 'empty' : 'counted'">{{ result === ''? 'result...' : result }}</p>
+				<p id="result" :data-result="result === '' ? 'empty' : 'counted'">
+					{{ result === ''? 'result...' : result }}
+				</p>
 			</div>
 
 		</div>
@@ -21,7 +25,9 @@
 </template>
 
 <script>
-	import {eventBus} from "./main";
+
+	import { eventBus } from "./main";
+	import { astar, Graph } from './astar'
 
 	export default {
 		name: 'App',
@@ -32,48 +38,45 @@
 
 		data() {
 			return {
-
 				gridList: [
 					'.X.',
 					'.X.',
 					'...',
 				],
-
 				startX: 2,
 				startY: 1,
 				endX: 0,
 				endY: 2,
-				result: ''
 
+				result: ''
 			}
 		},
 
 		methods: {
 
-			createField() {
-				eventBus.$emit('createField')
+			minWalk() {
+
+				eventBus.$emit('createField');
+
+				// todo refactor
+				let gridListNumberized = this.gridList.map( row => {
+					return row.replace(/\./g, '1')
+						.replace('X', '0')
+						.split('').map(str => str = +str);
+				});
+
+				let graph = new Graph( gridListNumberized, { diagonal: true } );
+				let start = graph.grid[this.startX][this.startY];
+				let end = graph.grid[this.endX][this.endY];
+				let result = astar.search(graph, start, end);
+
+				this.result = result.length;
 			},
-
-			minWalk(gridList, startX, startY, endX, endY) {
-
-				// eslint-disable-next-line no-constant-condition
-				if(false) {
-					alert('Тест');
-				}
-
-
-				console.table(
-					'gridList:', gridList,
-					'startX:', startX,
-					'startY:',startY,
-					'endX', endX,
-					'endY', endY
-				);
-
-
-				return '';
-			}
 		},
+
+		mounted() {
+			eventBus.$on('minWalk', () => this.minWalk())
+		}
 
 
 	}
@@ -169,7 +172,7 @@
 			.control {
 				display: flex;
 				flex-direction: row;
-				justify-content: space-between;
+				justify-content: stretch;
 				align-items: center;
 				width: 100%;
 				/*margin: 30px 0;*/
@@ -179,14 +182,18 @@
 					padding: 15px 30px;
 					outline: none;
 					border: none;
-					font-size: 15px;
+					font-size: 18px;
 					border-radius: 4px;
+					width: 100%;
 
 					&:hover, &:active {
 						transition: background-color ease .1s;
+						color: #fff;
+
 
 						&#create {
-							background-color: yellowgreen;
+							/*background-color: yellowgreen;*/
+							background-color: dodgerblue;
 						}
 
 						&#build {
