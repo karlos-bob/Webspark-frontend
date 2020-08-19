@@ -1,8 +1,10 @@
 <template>
-	<div class="cell" :data-cell="cellStatus" :data-role="role">
+	<div class="cell" :data-cell="cellStatus">
 		<p>{{ value }}</p>
-		<!-- todo add dynamic 'role' if there will be time-->
-		<p> {{ role ? '' : '' }} {{ coords }}</p>
+		<p>
+			<span class="role">{{ role }}</span>
+			{{ coords }}
+		</p>
 	</div>
 </template>
 
@@ -34,6 +36,7 @@
 		created() {
 			if( this.value === '.' ) this.cellStatus = 'free'
 			if( this.value === 'X' ) this.cellStatus = 'corrupted'
+
 			// else {
 			// 	console.log('Unknown or empty value!');
 			// }
@@ -56,6 +59,12 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+
+			> span.role {
+				font-weight: bold;
+				margin-right: 3px;
+				text-transform: uppercase;
+			}
 		}
 
 

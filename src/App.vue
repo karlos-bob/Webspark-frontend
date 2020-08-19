@@ -8,8 +8,8 @@
 
 			<!-- control-buttons -->
 			<div class="control">
-				<!--<button @click="createField" id="create">Start</button>-->
-				<button @click="minWalk" id="build">minWalk()</button>
+				<!--<button @click="reset" id="reset">Reset</button>-->
+				<button @click="minWalk" id="minWalk">minWalk()</button>
 			</div>
 
 			<!-- message with result -->
@@ -56,77 +56,49 @@
 
 			minWalk() {
 
-				eventBus.$emit('createField');
-
-				// todo refactor
-				let gridListNumberized = this.gridList.map( row => {
-					return row.replace(/\./g, '1')
-						.replace('X', '0')
-						.split('').map(str => str = +str);
+				// draw UI field
+				eventBus.$emit('createField', {
+					start: `${this.startX}.${this.startY}`,
+					end: `${this.endX}.${this.endY}`
 				});
 
-				let graph = new Graph( gridListNumberized, { diagonal: true } );
-				let start = graph.grid[this.startX][this.startY];
-				let end = graph.grid[this.endX][this.endY];
-				let result = astar.search(graph, start, end);
+				if(this.gridList.every( row => row.length > 1 && row.length < 100)) {
 
-				this.result = result.length;
+					// make new array with arrays of numbers
+					let gridListNumberized = this.gridList.map( row => {
+						return row
+							.replace(/\./g, '1')
+							.replace('X', '0')
+							.split('')
+							.map(str => str = +str);
+					});
+
+					let graph = new Graph( gridListNumberized, { diagonal: true } );
+					let start = graph.grid[this.startX][this.startY];
+					let end = graph.grid[this.endX][this.endY];
+					let result = astar.search(graph, start, end);
+
+					// write final result to data
+					this.result = result.length;
+				} else {
+					alert('gridList row must be > 1 and < 100!');
+				}
 			},
+
+			reset() {
+				// todo reset app
+			}
 		},
 
 		mounted() {
 			eventBus.$on('minWalk', () => this.minWalk())
 		}
 
-
 	}
 </script>
 
 <style lang="scss">
-
-	html, body, div, span, applet, object, iframe,
-	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-	a, abbr, acronym, address, big, cite, code,
-	del, dfn, em, img, ins, kbd, q, s, samp,
-	small, strike, strong, sub, sup, tt, var,
-	b, u, i, center,
-	dl, dt, dd, ol, ul, li,
-	fieldset, form, label, legend,
-	table, caption, tbody, tfoot, thead, tr, th, td,
-	article, aside, canvas, details, embed,
-	figure, figcaption, footer, header, hgroup,
-	menu, nav, output, ruby, section, summary,
-	time, mark, audio, video {
-		margin: 0;
-		padding: 0;
-		border: 0;
-		font-size: 100%;
-		font: inherit;
-		vertical-align: baseline;
-	}
-	/* HTML5 display-role reset for older browsers */
-	article, aside, details, figcaption, figure,
-	footer, header, hgroup, menu, nav, section {
-		display: block;
-	}
-	body {
-		line-height: 1;
-	}
-	ol, ul {
-		list-style: none;
-	}
-	blockquote, q {
-		quotes: none;
-	}
-	blockquote:before, blockquote:after,
-	q:before, q:after {
-		content: '';
-		content: none;
-	}
-	table {
-		border-collapse: collapse;
-		border-spacing: 0;
-	}
+	@import "./assets/reset";
 
 	#app {
 		-webkit-font-smoothing: antialiased;
@@ -134,7 +106,7 @@
 		text-align: center;
 		background: #20262E;
 		padding: 20px;
-		font-family: Helvetica;
+		font-family: Helvetica, sans-serif;
 		height: 100vh;
 
 		display: flex;
@@ -191,12 +163,11 @@
 						color: #fff;
 
 
-						&#create {
-							/*background-color: yellowgreen;*/
-							background-color: dodgerblue;
+						&#reset {
+							background-color: #ff1e6d;
 						}
 
-						&#build {
+						&#minWalk {
 							background-color: dodgerblue;
 						}
 					}

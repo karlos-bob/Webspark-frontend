@@ -6,7 +6,7 @@
 			:value="item.value"
 			:coords="item.coords"
 			:key="index"
-			:role="`test`"
+			:role="item.role"
 		/>
 	</div>
 </template>
@@ -31,40 +31,47 @@
 
 		data() {
 			return {
+
+				// object for inline styles
 				fieldStyle: {
 					'grid-template-rows': '',
 					'grid-template-columns': ''
 				},
-				// cellsCounter: undefined,
+
+				// special array only used for drawing UI
 				cellsList: []
 			}
 		},
 
 
 		mounted() {
-			eventBus.$on('createField', () => {
+			eventBus.$on('createField', ({start, end}) => {
 
 				// clear
 				this.cellsList.length = 0;
 
+				// .entries() was used because of using (index, value) in for...of cycle (i know about simple for() cycle :))
 				for( let [rowIndex, row] of this.gridList.entries() ) {
 
 					// make an array from string
 					let arrRow = row.split("");
 
 					for (let [valueIndex, value] of arrRow.entries()) {
+
 						// create new cell which be an object with 2 props(coords & value)
 						let cell = {};
-
 						cell.coords = `${rowIndex}.${valueIndex}`
 						cell.value = value;
+
+						if(cell.coords === start) cell.role = 'start'
+						if(cell.coords === end) cell.role = 'end'
 
 						// fill the array which will be iterated
 						this.cellsList.push(cell)
 					}
 				}
 
-				// console.log('resulted cellsList!', this.cellsList);
+				// console.log('cellsList results -> ', this.cellsList);
 				eventBus.$emit('cellsList', this.cellsList);
 
 				// inline styles for component
@@ -72,9 +79,6 @@
 				this.fieldStyle['grid-template-rows'] = `repeat(${this.gridList.length}, 94px)`;
 
 				eventBus.$emit('astar', this.cellsList)
-
-				// deprecated
-				// this.cellsCounter = this.gridList[0].length * this.gridList.length;
 			});
 		}
 	}
@@ -87,7 +91,6 @@
 		grid-gap: 2px;
 		margin: 30px 0;
 		width: 100%;
-		/*border: 1px solid #fff;*/
 
 		p {
 			width: 100%;
