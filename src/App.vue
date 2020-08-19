@@ -38,6 +38,8 @@
 
 		data() {
 			return {
+
+				// todo CHANGE THESE PARAMS to see how minWalk() function works
 				gridList: [
 					'.X.',
 					'.X.',
